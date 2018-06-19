@@ -210,6 +210,8 @@
 	}
 	document.getElementById("savePatient").addEventListener("submit", submitPatient);
 	document.getElementById("updatePatient").addEventListener("submit", updatePatient2);
-	
+///
+	document.getElementById("savePatient").addEventListener("submit", submitPatient);
+	document.getElementById("updatePatient").addEventListener("submit", updatePatient2);
 </script>
 @endsection
