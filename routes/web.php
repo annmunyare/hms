@@ -24,5 +24,5 @@ Route::get('/', 'PatientsController@index');
 Route::post('/savePatient','PatientsController@save');
 Route::post('/updatePatient', 'PatientsController@update');
 Route::get('/getPatient', 'PatientsController@get');
-Route::get('/deletePatient/{lesson}', 'PatientsController@delete');
-Route::get('/getSinglePatient/{lesson}', 'PatientsController@getSingle');
+Route::get('/deletePatient/{patientId}', 'PatientsController@delete');
+Route::get('/getSinglePatient/{patientId}', 'PatientsController@getSingle');

@@ -7,10 +7,12 @@
 			<label> Patient Name:</label>
 			<input class= "form-control" type="text" name="patientName" required>
 		</div>
+
 		<div class="inputItems">
-			<label> Patient Description:</label>
-			<textarea class= "form-control" name="patientDescription" required></textarea>
+			<label> Date of Birth</label>
+			<input class= "form-control" type="date" name="patientDateOfBirth" required>
 		</div>
+
 		<div  class="inputButton">
 			<button  class="btn btn-warning " type="button" onclick="hideInputForm()" > Cancel</button>
 			<button   class="btn btn-primary "type="submit">Add Patient</button>
@@ -35,8 +37,8 @@
 		</div>
 
 		<div class="inputItems">
-			<label> Patient Description:</label>
-			<textarea  class= "form-control" name="patientDescription" required></textarea>
+			<label> Date of Birth</label>
+			<input class= "form-control" type="date" name="patientDateOfBirth" required>
 		</div>
 
 		<div  class="inputButton">
@@ -81,17 +83,16 @@
 	
 	    var responseObj = JSON.parse(jsonResponse);
 	    var tData, count=0; 
-	    // var '<button type = 'button' onclick='showInputForm()> show Patient</button>';
-	    var tableData ="<button  class= 'btn btn-primary' type = 'button' onclick='showInputForm()'> Add Patient</button><table class ='table table-bordered table-striped table-condensed'><tr> <th>ID</th><th>Name</th><th>Description</th><th  colspan ='3'>Action</th></tr>";
+	    var tableData ="<button  class= 'btn btn-primary' type = 'button' onclick='showInputForm()'> Add Patient</button><table class ='table table-bordered table-striped table-condensed'><tr> <th>ID</th><th>Patient Name</th> <th>D.O.B</th><th  colspan ='3'>Action</th></tr>";
 	    for(tData in responseObj)
 	    {
 	        count++;
 	        tableData+= "<tr><td>" + count +"</td>";
-	        tableData+= "<td>" + responseObj[tData].name +"</td>";
-	        tableData+= "<td>" + responseObj[tData].description +"</td>";
-	        tableData+= "<td> <a href = '#' class= 'btn btn-info btn-sm' onclick ='showPatient("+responseObj[tData].id+")'> View</a></td>";
-	        tableData+= "<td> <a href = '#' class= 'btn btn-success btn-sm' onclick = 'updatePatient("+responseObj[tData].id+", \""+responseObj[tData].name+"\", \""+responseObj[tData].description+"\" )'> Edit</a></td>";
-	        tableData+= "<td> <a href = '#' class= 'btn btn-danger btn-sm' onclick ='deletePatient("+responseObj[tData].id+", \""+responseObj[tData].name+"\" )'> Delete</a></td></tr>";
+	        tableData+= "<td>" + responseObj[tData].patientName +"</td>";
+	      	tableData+= "<td>" + responseObj[tData].patientDateOfBirth +"</td>";
+			tableData+= "<td> <a href = '#' class= 'btn btn-info btn-sm' onclick ='showPatient("+responseObj[tData].patientId+")'> View</a></td>";
+	        tableData+= "<td> <a href = '#' class= 'btn btn-success btn-sm' onclick = 'updatePatient("+responseObj[tData].patientId+", \""+responseObj[tData].patientName+"\", \""+responseObj[tData].patientDateOfBirth +"\" )'> Edit</a></td>";
+	        tableData+= "<td> <a href = '#' class= 'btn btn-danger btn-sm' onclick ='deletePatient("+responseObj[tData].patientId+", \""+responseObj[tData].patientName+"\" )'> Delete</a></td></tr>";
 	
 	    }
 	    tableData+="</table>";
@@ -111,42 +112,42 @@
 	{   //get patientault 
 		e.preventDefault();
 		var patientName = document.forms["patientsForm"]["patientName"].value;
-		var patientDescription = document.forms["patientsForm"]["patientDescription"].value;
+		var patientDateOfBirth = document.forms["patientsForm"]["patientDateOfBirth"].value;
 
-		// alert(patientName+patientDescription);
+		// alert(patientName+patientDateOfBirth);
 	    //validate
-	    if((patientName != "") && (patientDescription != ""))
+	    if((patientName != "") && (patientDateOfBirth != ""))
 	    {
-			var sendData = "name="+patientName+"&description=" +patientDescription;
+			var sendData = "patientName="+patientName+"&patientDateOfBirth=" +patientDateOfBirth;
 			console.log(sendData);
 	        createObject(getPatients, methods[1], baseUrl+ "savePatient", sendData);
 	    }
 	}
 
-	function showPatient(id)
+	function showPatient(patientId)
 	{
-	    createObject(displaySinglePatient, methods[0], baseUrl+"getSinglePatient/"+id); 
+	    createObject(displaySinglePatient, methods[0], baseUrl+"getSinglePatient/"+patientId); 
 	    return false;
 	}
 
-	function updatePatient(id, name, description)
+	function updatePatient(patientId, patientName, patientDateOfBirth)
 	{
 	    document.getElementById("updateForm").style.display="block";
 	    document.getElementById("allPatients").style.display="none";
 	    //get updatepatient
-	    document.forms["updateForm1"]["patientName"].value = name;
-	    document.forms["updateForm1"]["patientDescription"].value = description;
-		document.forms["updateForm1"]["patientId"].value = id;
+	    document.forms["updateForm1"]["patientName"].value = patientName;
+	    document.forms["updateForm1"]["patientDateOfBirth"].value = patientDateOfBirth;
+		document.forms["updateForm1"]["patientId"].value = patientId;
 	}
 
 	function updatePatient2(e)
 	{
 		e.preventDefault();
 		var patientName = document.forms["updateForm1"]["patientName"].value;
-	    var patientDescription = document.forms["updateForm1"]["patientDescription"].value;
+	    var patientDateOfBirth = document.forms["updateForm1"]["patientDateOfBirth"].value;
 		var patientId = document.forms["updateForm1"]["patientId"].value;
 
-		var sendData = "name="+patientName+"&description=" +patientDescription+"&id=" +patientId;
+		var sendData = "patientName=" +patientName+"&patientDateOfBirth=" +patientDateOfBirth+"&patientId=" +patientId;
 			console.log(sendData);
 	        createObject(getPatients, methods[1], baseUrl+"updatePatient", sendData); 
 	}
@@ -154,8 +155,7 @@
 	function displaySinglePatient(jsonResponse)
 	{
 	    var responseObj2 = JSON.parse(jsonResponse);
-	    // var tableData ="<button type = 'button' onclick='showInputForm()'> show Patient</button>";
-	    var htmlString= "<h1>" + responseObj2.name +"</h1>" + "<p>" + responseObj2.description +"</p>"+"<button class= 'btn btn-warning ' type='button' onclick='getPatients()'>Go Back</button>";
+		 var htmlString= "<h1>" + responseObj2.patientName+"</h1>" + "<p>" + responseObj2.patientDateOfBirth +"</p>"+"<button class= 'btn btn-warning ' type='button' onclick='getPatients()'>Go Back</button>";
 	
 	    document.getElementById("allPatients").innerHTML= htmlString;
 	}
@@ -177,11 +177,11 @@
 		
 	    //get patient
 	    var patientName = document.forms["updateForm1"]["patientName"].value;
-	    var patientDescription = document.forms["updateForm1"]["patientDescription"].value;
+	    var patientDateOfBirth = document.forms["updateForm1"]["patientDateOfBirth"].value;
 	
-	        // alert(patientName+patientDescription);
+	        // alert(patientName+patientDateOfBirth);
 	    //validate
-	    if((patientName != "") && (patientDescription != ""))
+	    if((patientName != "") && (patientDateOfBirth != ""))
 	    {
 	        createObject(getPatients, methods[1], baseUrl +"updatePatient"); 
 	    }
@@ -191,13 +191,13 @@
 	    }
 	    
 	}
-	function deletePatient(id, name)
+	function deletePatient(patientId, patientName)
 	{   var text;
-	    if(confirm( "Do you want to delete" + " "+name + "?"))
+	    if(confirm( "Do you want to delete" + " "+patientName + "?"))
 	    {
 	        text = "You are pressed ok";
-	        createObject(getPatients, methods[0], baseUrl +"deletePatient/"+id); 
-	        alert("You have deleted" + " "+name );
+	        createObject(getPatients, methods[0], baseUrl +"deletePatient/"+patientId); 
+	        alert("You have deleted" + " "+patientName );
 	    }
 	    else
 	    {
@@ -210,8 +210,6 @@
 	}
 	document.getElementById("savePatient").addEventListener("submit", submitPatient);
 	document.getElementById("updatePatient").addEventListener("submit", updatePatient2);
-///
-	document.getElementById("savePatient").addEventListener("submit", submitPatient);
-	document.getElementById("updatePatient").addEventListener("submit", updatePatient2);
+
 </script>
 @endsection

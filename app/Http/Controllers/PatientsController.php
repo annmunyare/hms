@@ -14,22 +14,22 @@ class PatientsController extends Controller
     public function save(Request $request){
     
         $this->validate($request,[
-            'name'=>'required',
-            'description'=>'required'
+            'patientName'=>'required',
+            'patientDateOfBirth'=>'required'
         ]);
        
         $patient = new Patient;
-        $patient ->name = $request->name;
-        $patient->description =  $request->description;
+        $patient ->patientName = $request->patientName;
+        $patient->patientDateOfBirth =  $request->patientDateOfBirth;
         $patient->save();
    
     }
 
     public function update(Request $request){
-        $id = $request->id;
-        $patient = Patient::findOrFail($id);
-        $patient->name = $request->name;
-        $patient->description = $request->description;
+        $patientId = $request->patientId;
+        $patient = Patient::findOrFail($patientId);
+        $patient->patientName = $request->patientName;
+        $patient->patientDateOfBirth = $request->patientDateOfBirth;
         $patient->save();
     }
     public function get(){
@@ -41,8 +41,9 @@ class PatientsController extends Controller
         $patient->delete();
         echo $patient;
     }
-    public function getSingle(Patient $patient){
+    public function getSingle($patientId){
        
+        $patient = Patient::find($patientId);
         echo json_encode ($patient);
     }
 }
