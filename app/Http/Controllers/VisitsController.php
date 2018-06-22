@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Visit;
 
 class VisitsController extends Controller
 {
@@ -14,71 +15,42 @@ class VisitsController extends Controller
     public function index()
     {
         //
+        return view('visits.visits');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function save(Request $request){
+    
+        $this->validate($request,[
+            'visitName'=>'required',
+            'visitAmount'=>'required'
+        ]);
+       
+        $visit = new Visit;
+        $visit ->visitName = $request->visitName;
+        $visit->visitAmount =  $request->visitAmount;
+        $visit->save();
+   
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+    public function update(Request $request){
+        $visitId = $request->visitId;
+        $visit = Visit::findOrFail($visitId);
+        $visit->visitName = $request->visitName;
+        $visit->visitAmount = $request->visitAmount;
+        $visit->save();
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+    public function get(){
+        $visit = Visit::all();
+        echo $visit;
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+    public function delete($visitId){
+        $visit = Visit::find($visitId);
+        $visit->delete();
+        echo $visit;
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+    public function getSingle($visitId){
+       
+        $visit = Visit::find($visitId);
+        echo json_encode ($visit);
     }
 }

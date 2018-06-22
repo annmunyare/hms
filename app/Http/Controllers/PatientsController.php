@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Patient;
+use App\Visit;
 
 class PatientsController extends Controller
 {
@@ -31,6 +32,31 @@ class PatientsController extends Controller
         $patient->patientName = $request->patientName;
         $patient->patientDateOfBirth = $request->patientDateOfBirth;
         $patient->save();
+    }
+    public function book(Request $request){
+        $this->validate($request,[
+            'patientName'=>'required',
+            'patientDateOfBirth'=>'required',
+            'visitDate'=>'required',
+            'visitType'=>'required',
+            'exitTime'=>'required',
+            'visitStatus'=>'required'
+        ]);
+
+      
+        $visit = new Visit;
+        // $patientId = $request->patientId;
+        // $patient = Patient::findOrFail($patientId);
+        $visit->patientId=$request->input('patientId');
+        
+        $visit ->patientName = $request->patientName;
+        $visit->patientDateOfBirth =  $request->patientDateOfBirth;
+        $visit ->visitDate = $request->visitDate;
+        $visit ->visitType = $request->visitType;
+        $visit ->exitTime = $request->exitTime;
+        $visit ->visitStatus = $request->visitStatus;
+        $visit->save();
+      
     }
     public function get(){
         $patient = Patient::all();
