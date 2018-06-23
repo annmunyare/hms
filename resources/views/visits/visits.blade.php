@@ -212,7 +212,7 @@
 	function displaySingleVisit(jsonResponse)
 	{
 	    var responseObj2 = JSON.parse(jsonResponse);
-		 var htmlString= "<h1>" + responseObj2.visitName+"</h1>" + "<p>" + responseObj2.visitAmount +"</p>"+"<button class= 'btn btn-warning ' type='button' onclick='getVisits()'>Go Back</button>";
+		 var htmlString= "<h1>" + responseObj2.patientName+"</h1>" + "<p>" + 'D.O.B: '+ responseObj2.patientDateOfBirth +"</p>"+  "<p>"+ 'Visit Date: ' + responseObj2.visitDate+"</p>"+ "<p>" +'Visit Type: ' + responseObj2.visitType +"</p>"+ "<p>" +'Exit Time: ' + responseObj2.exitTime +"</p>"+ "<p>" + 'Visit Status'+ responseObj2.visitStatus +"</p>"+"<button class= 'btn btn-warning ' type='button' onclick='getVisits()'>Go Back</button>";
 	
 	    document.getElementById("allVisits").innerHTML= htmlString;
 	}
