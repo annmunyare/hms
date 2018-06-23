@@ -44,36 +44,63 @@
 
 <div id ="allVisits"></div>
 
-<div id ="updateForm">
-	<form  class = "form-horizontal" action="#" method="POST"  id="updateVisit" name="updateForm1" >
+<div id="updateForm" >
+	<form action="#" method="POST"  id="bookPatient" name="updateForm1" >
+		@csrf
 
-	@csrf
-
-	<div class="inputItems">
+		<div class="inputItems">
 			<input class= "form-control" type="hidden" name="visitId" required>
 		</div>
 
 		<div class="inputItems">
-			<label> Visit Name:</label>
-			<input class= "form-control" type="text" name="visitName" required>
+			<input class= "form-control" type="hidden" name="patientId" required>
 		</div>
 
 		<div class="inputItems">
-			<label> Visit Amount</label>
-			<input class= "form-control" type="number" name="visitAmount" required>
+			<label> Patient Name:</label>
+			<input class= "form-control" type="text" name="patientName" required>
+		</div>
+
+		<div class="inputItems">
+			<label> Date of Birth</label>
+			<input class= "form-control" type="date" name="patientDateOfBirth" required>
+		</div>
+
+		<!-- <div class="inputItems">
+			<input class= "form-control" type="hidden" name="visitId" required>
+		</div> -->
+		
+		<div class="inputItems">
+			<label> Visit Date:</label>
+			<input class= "form-control" type="date" name="visitDate" required>
+		</div>
+
+		<div class="inputItems">
+			<label> Visit Type</label>
+			<input class= "form-control" type="number" name="visitType" required>
+		</div>
+
+		<div class="inputItems">
+			<label> Exit Time:</label>
+			<input class= "form-control" type="date" name="exitTime" required>
+		</div>
+
+		<div class="inputItems">
+			<label> Visit Status</label>
+			<input class= "form-control" type="number" name="visitStatus" required>
 		</div>
 
 		<div  class="inputButton">
-			<button class="btn btn-warning " type="button" onclick="hideInputForm()" > Cancel</button>
-			<button  class="btn btn-primary " type="submit" >Update Visit</button>
+			<button  class="btn btn-warning " type="button" onclick="hideInputForm()" > Cancel</button>
+			<button   class="btn btn-primary "type="submit">Update Visit</button>
 		</div>
-
 	</form>
 </div>
+
 </div>
 <script type="text/javascript">
 	var methods = ["GET", "POST"];
-	var baseUrl = "http://localhost:8000/";
+	var baseUrl = "http://127.0.0.1:8000/";
 	
 	function createObject(readyStateFunction, requestMethod, requestUrl, sendData=null )
 	{
@@ -106,16 +133,21 @@
 	
 	    var responseObj = JSON.parse(jsonResponse);
 	    var tData, count=0; 
-	    var tableData ="<table class ='table table-bordered table-striped table-condensed'><tr> <th>ID</th><th>Visit Name</th> <th>Amount</th><th  colspan ='3'>Action</th></tr>";
+	    var tableData ="<table class ='table table-bordered table-striped table-condensed'><tr> <th>ID</th><th>Patient ID</th> <th>Patient Name</th> <th>Patient D.O.B</th> <th>Visit Date</th> <th>Visit Type</th> <th>Exit Time</th><th>Visit Status</th><th  colspan ='8'>Action</th></tr>";
 	    for(tData in responseObj)
 	    {
 	        count++;
 	        tableData+= "<tr><td>" + count +"</td>";
-	        tableData+= "<td>" + responseObj[tData].visitName +"</td>";
-	      	tableData+= "<td>" + responseObj[tData].visitAmount +"</td>";
+			tableData+= "<td>" + responseObj[tData].patientId +"</td>";
+	        tableData+= "<td>" + responseObj[tData].patientName +"</td>";
+	      	tableData+= "<td>" + responseObj[tData].patientDateOfBirth +"</td>";
+			  tableData+= "<td>" + responseObj[tData].visitDate +"</td>";
+			  tableData+= "<td>" + responseObj[tData].visitType +"</td>";
+			  tableData+= "<td>" + responseObj[tData].exitTime +"</td>";
+			  tableData+= "<td>" + responseObj[tData].visitStatus +"</td>";
 			tableData+= "<td> <a href = '#' class= 'btn btn-info btn-sm' onclick ='showVisit("+responseObj[tData].visitId+")'> View</a></td>";
-	        tableData+= "<td> <a href = '#' class= 'btn btn-success btn-sm' onclick = 'updateVisit("+responseObj[tData].visitId+", \""+responseObj[tData].visitName+"\", \""+responseObj[tData].visitAmount +"\" )'> Edit</a></td>";
-	        tableData+= "<td> <a href = '#' class= 'btn btn-danger btn-sm' onclick ='deleteVisit("+responseObj[tData].visitId+", \""+responseObj[tData].visitName+"\" )'> Delete</a></td></tr>";
+	        tableData+= "<td> <a href = '#' class= 'btn btn-success btn-sm' onclick = 'updateVisit("+responseObj[tData].visitId+", \""+responseObj[tData].patientId+"\",  \""+responseObj[tData].patientName+"\",  \""+responseObj[tData].patientDateOfBirth+"\",  \""+responseObj[tData].visitDate+"\" , \""+responseObj[tData].visiType+"\" , \""+responseObj[tData].exitTime+"\" , \""+responseObj[tData].visitStatus+"\")'> Edit</a></td>";
+	        tableData+= "<td> <a href = '#' class= 'btn btn-danger btn-sm' onclick ='deleteVisit("+responseObj[tData].visitId+", \""+responseObj[tData].patientName+"\" )'> Delete</a></td></tr>";
 	
 	    }
 	    tableData+="</table>";
@@ -125,9 +157,10 @@
 	function getVisits()
 	{
 	    createObject(displayVisits, methods[0], baseUrl + "getVisit");
-	    document.getElementById("inputForm").style.display="none";
+	    
 	    document.getElementById("updateForm").style.display="none";
 		document.getElementById("allVisits").style.display="block";
+	
 	    
 	}
 	
@@ -139,26 +172,41 @@
 	    return false;
 	}
 
-	function updateVisit(visitId, visitName, visitAmount)
+	function updateVisit( visitId, patientId, patientName, patientDateOfBirth, visitDate, visitType, exitTime, visitStatus)
 	{
 	    document.getElementById("updateForm").style.display="block";
 	    document.getElementById("allVisits").style.display="none";
-	    //get updatevisit
-	    document.forms["updateForm1"]["visitName"].value = visitName;
-	    document.forms["updateForm1"]["visitAmount"].value = visitAmount;
+	    
 		document.forms["updateForm1"]["visitId"].value = visitId;
+	    document.forms["updateForm1"]["patientName"].value = patientName;
+	    document.forms["updateForm1"]["patientDateOfBirth"].value = patientDateOfBirth;
+		document.forms["updateForm1"]["patientId"].value = patientId;
+	    document.forms["updateForm1"]["visitDate"].value = visitDate;
+		document.forms["updateForm1"]["visitType"].value = visitType;
+		document.forms["updateForm1"]["exitTime"].value = exitTime;
+	    document.forms["updateForm1"]["visitStatus"].value = visitStatus;
 	}
 
-	function updateVisit2(e)
-	{
-		e.preventDefault();
-		var visitName = document.forms["updateForm1"]["visitName"].value;
-	    var visitAmount = document.forms["updateForm1"]["visitAmount"].value;
-		var visitId = document.forms["updateForm1"]["visitId"].value;
+	document.getElementById("bookPatient").addEventListener("submit", updateVisit2);
 
-		var sendData = "visitName=" +visitName+"&visitAmount=" +visitAmount+"&visitId=" +visitId;
+	function updateVisit2(e)
+	{ 
+		e.preventDefault();
+		var patientName = document.forms["updateForm1"]["patientName"].value;
+	    var patientDateOfBirth = document.forms["updateForm1"]["patientDateOfBirth"].value;
+		var patientId = document.forms["updateForm1"]["patientId"].value;
+		var visitId = document.forms["updateForm1"]["visitId"].value;
+		var visitDate = document.forms["updateForm1"]["visitDate"].value;
+		var visitType = document.forms["updateForm1"]["visitType"].value;
+		var exitTime = document.forms["updateForm1"]["exitTime"].value;
+	    var visitStatus = document.forms["updateForm1"]["visitStatus"].value;
+		
+		var sendData = "patientName=" +patientName+"&patientDateOfBirth=" +patientDateOfBirth+"&patientId=" +patientId +"&visitId=" +visitId
+		+"&visitDate=" +visitDate+"&visitType=" +visitType+
+		"&exitTime=" +exitTime+"&visitStatus=" +visitStatus;
 			console.log(sendData);
-	        createObject(getVisits, methods[1], baseUrl+"updateVisit", sendData); 
+	        
+	    createObject(getVisits, methods[1], baseUrl + "updateVisit", sendData); 
 	}
 	
 	function displaySingleVisit(jsonResponse)
@@ -177,7 +225,7 @@
 	
 	function hideInputForm()
 	{
-	    document.getElementById("inputForm").style.display="none";
+	    
 	    document.getElementById("allVisits").style.display="block";
 	    document.getElementById("updateForm").style.display="none";
 	}
@@ -199,8 +247,8 @@
 	
 	    
 	}
-	document.getElementById("saveVisit").addEventListener("submit", submitVisit);
-	document.getElementById("updateVisit").addEventListener("submit", updateVisit2);
+	
+	
 
 </script>
 </body>

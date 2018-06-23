@@ -326,8 +326,7 @@
 		var patientName = document.forms["bookForm1"]["patientName"].value;
 	    var patientDateOfBirth = document.forms["bookForm1"]["patientDateOfBirth"].value;
 		var patientId = document.forms["bookForm1"]["patientId"].value;
-		// var visitId = document.forms["bookForm1"]["visitId"].value;
-	    var visitDate = document.forms["bookForm1"]["visitDate"].value;
+		var visitDate = document.forms["bookForm1"]["visitDate"].value;
 		var visitType = document.forms["bookForm1"]["visitType"].value;
 		var exitTime = document.forms["bookForm1"]["exitTime"].value;
 	    var visitStatus = document.forms["bookForm1"]["visitStatus"].value;
