@@ -37,6 +37,7 @@ Route::get('/getSingleService/{serviceId}', 'ServicesController@getSingle');
 
 Route::get('/visits', 'VisitsController@index');
 Route::post('/updateVisit', 'VisitsController@update');
+Route::post('/saveBill', 'VisitsController@bill');
 Route::get('/getVisit', 'VisitsController@get');
 Route::get('/deleteVisit/{visitId}', 'VisitsController@delete');
 Route::get('/getSingleVisit/{visitId}', 'VisitsController@getSingle');

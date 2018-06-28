@@ -19,7 +19,7 @@
 	    <ul class="navbar-nav mr-auto">
 
 			<li class="nav-item">
-				<a class="nav-link" href="#"> Patients</a>
+				<a class="nav-link" href="/patients"> Patients</a>
 			
 			</li>
 
@@ -97,6 +97,41 @@
 	</form>
 </div>
 
+<div id="billForm" >
+	<form action="#" method="POST"  id="billPatient" name="billForm1" >
+		@csrf
+
+		<div class="inputItems">
+			<input class= "form-control" type="hidden" name="visitId" required>
+		</div>
+
+
+		<div class="inputItems">
+			<input class= "form-control" type="hidden" name="serviceId" required>
+		</div>
+
+		<div class="inputItems">
+			<label> Amount:</label>
+			<input class= "form-control" type="number" name="amount" required>
+		</div>
+
+		<div class="inputItems">
+			<label> Quantity</label>
+			<input class= "form-control" type="number" name="quantity" required>
+		</div>
+
+		<div class="inputItems">
+			<label> Bill Time:</label>
+			<input class= "form-control" type="date" name="billTime" required>
+		</div>
+
+		<div  class="inputButton">
+			<button  class="btn btn-warning " type="button" onclick="hideInputForm()" > Cancel</button>
+			<button   class="btn btn-primary "type="submit">Bill Patient</button>
+		</div>
+	</form>
+</div>
+
 </div>
 <script type="text/javascript">
 	var methods = ["GET", "POST"];
@@ -146,7 +181,8 @@
 			  tableData+= "<td>" + responseObj[tData].exitTime +"</td>";
 			  tableData+= "<td>" + responseObj[tData].visitStatus +"</td>";
 			tableData+= "<td> <a href = '#' class= 'btn btn-info btn-sm' onclick ='showVisit("+responseObj[tData].visitId+")'> View</a></td>";
-	        tableData+= "<td> <a href = '#' class= 'btn btn-success btn-sm' onclick = 'updateVisit("+responseObj[tData].visitId+", \""+responseObj[tData].patientId+"\",  \""+responseObj[tData].patientName+"\",  \""+responseObj[tData].patientDateOfBirth+"\",  \""+responseObj[tData].visitDate+"\" , \""+responseObj[tData].visiType+"\" , \""+responseObj[tData].exitTime+"\" , \""+responseObj[tData].visitStatus+"\")'> Edit</a></td>";
+			tableData+= "<td> <a href = '#' class= 'btn btn-info btn-sm' onclick ='createBill("+responseObj[tData].visitId+", \""+1+"\")'> Bill </a></td>";
+		    tableData+= "<td> <a href = '#' class= 'btn btn-success btn-sm' onclick = 'updateVisit("+responseObj[tData].visitId+", \""+responseObj[tData].patientId+"\",  \""+responseObj[tData].patientName+"\",  \""+responseObj[tData].patientDateOfBirth+"\",  \""+responseObj[tData].visitDate+"\" , \""+responseObj[tData].visiType+"\" , \""+responseObj[tData].exitTime+"\" , \""+responseObj[tData].visitStatus+"\")'> Edit</a></td>";
 	        tableData+= "<td> <a href = '#' class= 'btn btn-danger btn-sm' onclick ='deleteVisit("+responseObj[tData].visitId+", \""+responseObj[tData].patientName+"\" )'> Delete</a></td></tr>";
 	
 	    }
@@ -160,6 +196,7 @@
 	    
 	    document.getElementById("updateForm").style.display="none";
 		document.getElementById("allVisits").style.display="block";
+		document.getElementById("billForm").style.display="none";
 	
 	    
 	}
@@ -171,6 +208,54 @@
 	    createObject(displaySingleVisit, methods[0], baseUrl+"getSingleVisit/"+visitId); 
 	    return false;
 	}
+
+	function createBill( visitId, serviceId)
+	{
+	    document.getElementById("updateForm").style.display="none";
+	    document.getElementById("allVisits").style.display="none";
+		document.getElementById("billForm").style.display="block";
+		
+	    
+		document.forms["billForm1"]["visitId"].value = visitId;
+		document.forms["billForm1"]["serviceId"].value = serviceId;
+	    // document.forms["billForm1"]["amount"].value = amount;
+	    // document.forms["billForm1"]["quantity"].value = quantity;
+		// document.forms["billForm1"]["billTime"].value = billTime;
+
+	}
+
+	function createBill2(e)
+	{ 
+		e.preventDefault();
+		var visitId = document.forms["billForm1"]["visitId"].value;
+	    var serviceId = document.forms["billForm1"]["serviceId"].value;
+		var amount = document.forms["billForm1"]["amount"].value;
+		var quantity = document.forms["billForm1"]["quantity"].value;
+		var billTime = document.forms["billForm1"]["billTime"].value;
+
+		
+		var sendData = "visitId=" +visitId+"&serviceId=" +serviceId+"&billTime=" +billTime+"&amount=" +amount +"&quantity=" +quantity;
+	
+			console.log(sendData);
+	        
+	    createObject(getVisits, methods[1], baseUrl + "saveBill", sendData); 
+	}
+
+		function updateVisit( visitId, patientId, patientName, patientDateOfBirth, visitDate, visitType, exitTime, visitStatus)
+	{
+	    document.getElementById("updateForm").style.display="block";
+	    document.getElementById("allVisits").style.display="none";
+	    
+		document.forms["updateForm1"]["visitId"].value = visitId;
+	    document.forms["updateForm1"]["patientName"].value = patientName;
+	    document.forms["updateForm1"]["patientDateOfBirth"].value = patientDateOfBirth;
+		document.forms["updateForm1"]["patientId"].value = patientId;
+	    document.forms["updateForm1"]["visitDate"].value = visitDate;
+		document.forms["updateForm1"]["visitType"].value = visitType;
+		document.forms["updateForm1"]["exitTime"].value = exitTime;
+	    document.forms["updateForm1"]["visitStatus"].value = visitStatus;
+	}
+
 
 	function updateVisit( visitId, patientId, patientName, patientDateOfBirth, visitDate, visitType, exitTime, visitStatus)
 	{
@@ -188,6 +273,7 @@
 	}
 
 	document.getElementById("bookPatient").addEventListener("submit", updateVisit2);
+	document.getElementById("billPatient").addEventListener("submit", createBill2);
 
 	function updateVisit2(e)
 	{ 

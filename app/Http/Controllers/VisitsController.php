@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Visit;
 use App\Patient;
+use App\Bill;
 
 
 class VisitsController extends Controller
@@ -35,9 +36,11 @@ class VisitsController extends Controller
     }
 
     public function update(Request $request){
+
         $visitId = $request->visitId;
         $visit = Visit::findOrFail($visitId);
-        $visit->patientId=$request->input('patientId');
+
+        // $visit->patientId=$request->input('patientId');
         $visit ->patientName = $request->patientName;
         $visit->patientDateOfBirth =  $request->patientDateOfBirth;
         $visit ->visitDate = $request->visitDate;
@@ -45,6 +48,22 @@ class VisitsController extends Controller
         $visit ->exitTime = $request->exitTime;
         $visit ->visitStatus = $request->visitStatus;
         $visit->save();
+    }
+
+    public function bill(Request $request){
+
+
+
+
+        $bill = new Bill();
+       
+
+        $bill->visitId =  $request->visitId;
+        $bill ->serviceId = $request->serviceId;
+        $bill ->amount = $request->amount;
+        $bill ->quantity = $request->quantity;
+        $bill ->billTime = $request->billTime;
+        $bill->save();
     }
     public function get(){
         $visit = Visit::all();
