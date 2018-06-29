@@ -37,6 +37,10 @@
 			<a class="nav-link" href="/bills"  > Bills</a>
 			</li>
 
+			<li class="nav-item">
+			<a class="nav-link" href="/groups">Authenticate</a>
+			</li>
+
 		</ul>
 	</div>
 </nav>
