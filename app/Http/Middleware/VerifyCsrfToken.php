@@ -19,7 +19,8 @@ class VerifyCsrfToken extends Middleware
         '/updateVisit',
         '/bookVisit',
         '/saveBill',
-        '/savePin',
+        
+       
         //
     ];
 }

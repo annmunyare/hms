@@ -45,7 +45,7 @@
 			</li>
 
             <li class="nav-item">
-				<a class="nav-link" href="/groups"   onclick="authenticate('{{$applicationId}}', '{{$mobileNumber}}')"> Authenticate</a>
+				<a class="nav-link" href="#"   onclick="authenticate('{{$applicationId}}', '{{$mobileNumber}}')"> Authenticate</a>
 			</li>     
 
 
@@ -55,36 +55,20 @@
 </nav>
 <div class = "container">
 
-<div id="getPinForm" >
-	<form action="#" method="POST"  id="getPin" name="getPin" >
+<div id="inputForm" >
+	<form action="#" method="POST"  id="savePin" name="pinsForm" >
 		@csrf
 
         <div class="inputItems">
-			<input class= "form-control" type="hidden" name="kaizalaConnectorId" required>
+			<input class= "form-control" type="hidden" name="kaizalaMobileNo"  value ={{$mobileNumber}} required  >
 		</div>
 
         <div class="inputItems">
-			<input class= "form-control" type="hidden" name="kaizalaMobileNo" required>
+			<input class= "form-control" type="hidden" name="kaizalaConnectorId"   value ={{$applicationId}} required>
 		</div>
 
-
-
-
-
-
-	</form>
-</div>
-
-<div id="inputForm2" >
-	<form action="#" method="POST"  id="savePin" name="pinsForm2" >
-		@csrf
-
-        <div class="inputItems">
-			<input class= "form-control" type="hidden" name="kaizalaConnectorId" required>
-		</div>
-
-        <div class="inputItems">
-			<input class= "form-control" type="hidden" name="kaizalaMobileNo" required>
+		<div class="inputItems">
+			<input class= "form-control" type="hidden" name="kaizalaConnectorSecret" value ={{$applicationSecret}} required >
 		</div>
 
 		<div class="inputItems">
@@ -92,10 +76,7 @@
 			<input class= "form-control" type="number" name="authpin" required>
 		</div>
 
-
-
 		<div  class="inputButton">
-			<button  class="btn btn-warning " type="button" onclick="hideInputForm()" > Cancel</button>
 			<button   class="btn btn-primary "type="submit">Submit</button>
 		</div>
 	</form>
@@ -109,145 +90,138 @@
 
 <script type="text/javascript">
 	var methods = ["GET", "POST"];
-	var rootUrl = "https://api.kaiza.la/";
-    var contentType = ["application/x-www-form-urlencoded", "application/json"];
+	var rootUrl =['https://api.kaiza.la/', 'https://kms.kaiza.la/'];
+	var contentType = ["application/x-www-form-urlencoded", "application/json"];
+	var vars = ["fa7dbf9e-108a-4ed0-9b76-3c4589754464", "EYYD8UWB92"];
+
 	//vars akina id s
-	function createObject(readyStateFunction, requestMethod, contentType, requestUrl, sendData=null )
+	function createObject(readyStateFunction, requestMethod, contentType, requestUrl, sendData=null , refreshToken = null, vars = null, accessToken = null)
 	{
 
 	    var obj = new  XMLHttpRequest();
-	    obj.onreadystatechange = function() 
-	    {
-	        if (this.readyState == 4 && this.status == 200) 
-	        {
-	            readyStateFunction(this.responseText);
-	        }
-	    };
+		obj.onreadystatechange = function() {
+			if ((this.readyState == 4) && (this.status == 200)) {
+				readyStateFunction(this.responseText, accessToken = null);
+			}
+		};
 
-	    obj.open(requestMethod, requestUrl, true )
-			if(requestMethod=='POST')
-			{
-				obj.setRequestHeader("Content-Type", contentType);
-				obj.setRequestHeader("X-CSRF-token",  document.querySelector('meta[name = "csrf-token"]').getAttribute('content'));    
-				obj.send(sendData);
-			}
-			else
-			{
-				obj.send();
-			}
+		obj.open(requestMethod, requestUrl, true);
+
+		// if (refreshToken != null) {
+		// 	obj.setRequestHeader("applicationId", vars[0]);
+		// 	obj.setRequestHeader("applicationSecret", vars[1]);
+		// 	obj.setRequestHeader("refreshToken", refreshToken);
+		// }
+
+		// if (accessToken != null) {
+		// 	obj.setRequestHeader("accessToken", accessToken);
+		// }
+
+		if (requestMethod == 'POST') {
+			obj.setRequestHeader("Content-Type", "application/json");
+			obj.setRequestHeader("X-CSRF-token",  document.querySelector('meta[name = "csrf-token"]').getAttribute('content'));  
+
+			console.log(sendData);
+			obj.send(sendData);
+		} else {
+			obj.send();
+		}
 	 
 	}
 
     function authenticate( kaizalaConnectorId, kaizalaMobileNo)
-
 	{
-	    
-
-       
-			var sendData = '{"mobileNumber": "' +kaizalaMobileNo+'", applicationId:"'+kaizalaConnectorId+'"}';
-
+			var sendData = '{"mobileNumber": "'+kaizalaMobileNo+'", applicationId:"'+kaizalaConnectorId+'"}';
 			console.log(sendData);
-	        createObject(SubmitPin, methods[1],  contentType[1], rootUrl+"v1/generatePin", sendData);
-	    
-	    
+	        createObject( showPinForm, methods[1],  contentType[1], rootUrl[0]+"v1/generatePin", sendData);
+    
 	}
 
-
-	
     function showPinForm()
     {
         document.getElementById("inputForm").style.display="block";
     }
 
-	function displayPatients(jsonResponse)
-	{
-	
-	    var responseObj = JSON.parse(jsonResponse);
-	    var tData, count=0; 
-	    var tableData ="<button  class= 'btn btn-primary' type = 'button' onclick='showInputForm()'> Add Patient</button><table class ='table table-bordered table-striped table-condensed'><tr> <th>ID</th><th>Patient Name</th> <th>D.O.B</th><th  colspan ='4'>Action</th></tr>";
-	    for(tData in responseObj)
-	    {
-	        count++;
-	        tableData+= "<tr><td>" + count +"</td>";
-	        tableData+= "<td>" + responseObj[tData].patientName +"</td>";
-	      	tableData+= "<td>" + responseObj[tData].patientDateOfBirth +"</td>";
-			tableData+= "<td> <a href = '#' class= 'btn btn-info btn-sm' onclick ='showPatient("+responseObj[tData].patientId+")'> View</a></td>";
-	        tableData+= "<td> <a href = '#' class= 'btn btn-success btn-sm' onclick = 'updatePatient("+responseObj[tData].patientId+", \""+responseObj[tData].patientName+"\", \""+responseObj[tData].patientDateOfBirth +"\" )'> Edit</a></td>";
-			tableData+= "<td> <a href = '#' class= 'btn btn-warning btn-sm' onclick = 'bookVisit("+responseObj[tData].patientId+", \""+responseObj[tData].patientName+"\", \""+responseObj[tData].patientDateOfBirth +"\" )'> Book Visit</a></td>";
-	        tableData+= "<td> <a href = '#' class= 'btn btn-danger btn-sm' onclick ='deletePatient("+responseObj[tData].patientId+", \""+responseObj[tData].patientName+"\" )'> Delete</a></td></tr>";
-	
-	    }
-	    tableData+="</table>";
-	    document.getElementById("allPatients").innerHTML= tableData;
-	}
-	
-	function getPatients()
-	{
-	    createObject(displayPatients, methods[0], baseUrl + "getPatient");
-	    document.getElementById("inputForm").style.display="none";
-	    document.getElementById("updateForm").style.display="none";
-		document.getElementById("allPatients").style.display="block";
-		document.getElementById("bookForm").style.display="none";
+	document.getElementById("savePin").addEventListener("submit", submitPin);
 
-	    
-	}
-	
-	function SubmitPin(e)
-	{   //get pin 
+	function submitPin(e )
+	{    
 		e.preventDefault();
-		var kaizalaMobileNo = document.forms["pinsForm"]["kaizalaMobileNo "].value;
+		var kaizalaMobileNo = document.forms["pinsForm"]["kaizalaMobileNo"].value;
 		var kaizalaConnectorId = document.forms["pinsForm"]["kaizalaConnectorId"].value;
+		var kaizalaConnectorSecret = document.forms["pinsForm"]["kaizalaConnectorSecret"].value;
         var authpin = document.forms["pinsForm"]["authpin"].value;
 
-		// alert(patientName+patientDateOfBirth);
-	    //validate
-	    if((kaizalaMobileNo != "") && (kaizalaConnectorId != "") && (authpin != "") )
-	    {
-			var sendData = "kaizalaMobileNo="+kaizalaMobileNo +"&kaizalaConnectorId=" +kaizalaConnectorId +"&authpin=" + authpin;
 
-			console.log(sendData);
-	        createObject(authenticate, methods[1],  contentType[1], rootUrl+"v1/generatePin"+"savePin", sendData);
+
+
+	    if((kaizalaMobileNo != "") && (kaizalaConnectorId != "") && (kaizalaConnectorSecret != "")  && (authpin != "") )
+	    {
+			var sendData = '{"mobileNumber": "'+kaizalaMobileNo+'", "applicationId": "'+kaizalaConnectorId+'", "applicationSecret":"'+kaizalaConnectorSecret+'",  "pin":'+authpin+'}';
+
+			// console.log(sendData);
+	        createObject(refreshToken, methods[1],  contentType[1], rootUrl[0]+"v1/loginWithPinAndApplicationId", sendData);
 	    }
 	}
 
-	function showPatient(patientId)
+
+	function refreshToken(jsonRespons)
+	{ 
+		var refreshToken = JSON.parse(jsonResponse);
+
+		var kaizalaConnectorId = document.forms["pinsForm"]["kaizalaConnectorId"].value;
+		var kaizalaConnectorSecret = document.forms["pinsForm"]["kaizalaConnectorSecret"].value;
+
+    	var vars = [kaizalaConnectorId, kaizalaConnectorSecret];
+
+      createObject(getAccessToken, methods[0], rootUrl[1]+'/v1/accessToken', null, refreshToken.refreshToken, vars, null);
+		
+	}
+
+	function getAccessToken(jsonResponse)
+	 {
+   		 var accessToken = JSON.parse(jsonResponse);
+
+    	console.log(accessToken);
+
+    
+		createObjectt(fetchGroups, methods[0], rootUrl[1] + '/v1/groups?fetchAllGroups=true&showDetails=true', null, null, null, accessToken.accessToken);
+	}
+
+	function getUser(jsonResponse, accessToken) 
 	{
-	    createObject(displaySinglePatient, methods[0], baseUrl+"getSinglePatient/"+patientId); 
-	    return false;
+    	const user = JSON.parse(jsonResponse);
+
+    	console.log(user);
+    	createObject(fetchGroups, methods[0], rootUrl[1] + '/v1/groups?fetchAllGroups=true&showDetails=true', null, null, null, accessToken);
 	}
 
 
-
-
-	
-	function displaySinglePatient(jsonResponse)
+	function fetchGroups(jsonResponse)
 	{
-	    var responseObj2 = JSON.parse(jsonResponse);
-		 var htmlString= "<h1>" + responseObj2.patientName+"</h1>" + "<p>" + responseObj2.patientDateOfBirth +"</p>"+"<button class= 'btn btn-warning ' type='button' onclick='getPatients()'>Go Back</button>";
 	
-	    document.getElementById("allPatients").innerHTML= htmlString;
+		var responseObj = JSON.parse(jsonResponse);
+		var groups = responseObj.groups;
+	  
+		var table = "";
+		tableData += "<table class='table table-bordered table-striped table-condensed'><tr><th class='text-centre'>Group Name</th><th class='text-centre'>Sub Groups</th>";
+		tableData += "<th class='text-centre'>Group Type</th><th class='text-centre'>Welcome Message</th></tr><tbody id='tbody'></tbody></table>";
+
+		var tbody = '';
+			for (let i = 0; i < groups.length; i++)
+			{
+				tbody += '<tr><td>' + responseObj.groups[i].groupName + '</td>';
+				tbody += '<td>' + responseObj.groups[i].hasSubGroups + '</td>';
+				tbody += '<td>' + responseObj.groups[i].groupType + '</td>';                
+				tbody += '<td>' + responseObj.groups[i].welcomeMessage + '</td></tr>';
+
+				document.getElementById('tbody').innerHTML = tbody;
+
+			
+				document.getElementById("allPatients").innerHTML= tableData;
+			}
 	}
 	
-	function showInputForm()
-	{
-	    document.getElementById("inputForm").style.display="block";
-	    document.getElementById("allPatients").style.display="none";
-	}
-	
-	function hideInputForm()
-	{
-	    document.getElementById("inputForm").style.display="none";
-	    document.getElementById("allPatients").style.display="block";
-	    document.getElementById("updateForm").style.display="none";
-		document.getElementById("bookForm").style.display="none";
-	}
-
-	
-
-
-
-	
-	// document.getElementById("savePin").addEventListener("submit", postPin);
 
 </script>
 </body>
