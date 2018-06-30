@@ -45,7 +45,7 @@
 			</li>
 
             <li class="nav-item">
-				<a class="nav-link" href="#"   onclick="authenticate('{{$applicationId}}', '{{$mobileNumber}}')"> Authenticate</a>
+				<a class="nav-link" href="#"  > Authenticate</a>
 			</li>     
 
 
@@ -54,7 +54,7 @@
     </div>
 </nav>
 <div class = "container">
-
+<button  class="btn btn-primary " onclick="authenticate('{{$applicationId}}', '{{$mobileNumber}}')" > Authenticate </button>
 <div id="inputForm" >
 	<form action="#" method="POST"  id="savePin" name="pinsForm" >
 		@csrf
@@ -90,36 +90,37 @@
 
 <script type="text/javascript">
 	var methods = ["GET", "POST"];
-	var rootUrl =['https://api.kaiza.la/', 'https://kms.kaiza.la/'];
+	var rootUrl =['https://api.kaiza.la/', 'https://kms.kaiza.la//'];
 	var contentType = ["application/x-www-form-urlencoded", "application/json"];
-	var vars = ["fa7dbf9e-108a-4ed0-9b76-3c4589754464", "EYYD8UWB92"];
+	// var vars = ["fa7dbf9e-108a-4ed0-9b76-3c4589754464", "EYYD8UWB92"];
 
 	//vars akina id s
-	function createObject(readyStateFunction, requestMethod, contentType, requestUrl, sendData=null , refreshToken = null, vars = null, accessToken = null)
+	function createObject(readyStateFunction, requestMethod, contentType=null, requestUrl, sendData=null , refreshToken = null, accessToken = null, vars = null)
 	{
 
 	    var obj = new  XMLHttpRequest();
 		obj.onreadystatechange = function() {
 			if ((this.readyState == 4) && (this.status == 200)) {
-				readyStateFunction(this.responseText, accessToken = null);
+				readyStateFunction(this.responseText);
 			}
 		};
 
 		obj.open(requestMethod, requestUrl, true);
 
-		// if (refreshToken != null) {
-		// 	obj.setRequestHeader("applicationId", vars[0]);
-		// 	obj.setRequestHeader("applicationSecret", vars[1]);
-		// 	obj.setRequestHeader("refreshToken", refreshToken);
-		// }
+		if (refreshToken != null) {
 
-		// if (accessToken != null) {
-		// 	obj.setRequestHeader("accessToken", accessToken);
-		// }
+			obj.setRequestHeader("refreshToken", refreshToken);
+			obj.setRequestHeader("applicationSecret", vars[1]);
+			obj.setRequestHeader("applicationId", vars[0]);
+		}
+
+		if (accessToken != null) {
+			obj.setRequestHeader("accessToken", accessToken);
+		}
 
 		if (requestMethod == 'POST') {
 			obj.setRequestHeader("Content-Type", "application/json");
-			obj.setRequestHeader("X-CSRF-token",  document.querySelector('meta[name = "csrf-token"]').getAttribute('content'));  
+			// obj.setRequestHeader("X-CSRF-token",  document.querySelector('meta[name = "csrf-token"]').getAttribute('content'));  
 
 			console.log(sendData);
 			obj.send(sendData);
@@ -144,7 +145,7 @@
 
 	document.getElementById("savePin").addEventListener("submit", submitPin);
 
-	function submitPin(e )
+	function submitPin(e)
 	{    
 		e.preventDefault();
 		var kaizalaMobileNo = document.forms["pinsForm"]["kaizalaMobileNo"].value;
@@ -165,36 +166,43 @@
 	}
 
 
-	function refreshToken(jsonRespons)
+	function refreshToken(jsonResponse)
 	{ 
-		var refreshToken = JSON.parse(jsonResponse);
+		var responseObj = JSON.parse(jsonResponse);
+		var refreshToken = responseObj.refreshToken;
+		var endpointUrl = responseObj.endpointUrl;
+
+
+    	console.log(responseObj);
 
 		var kaizalaConnectorId = document.forms["pinsForm"]["kaizalaConnectorId"].value;
 		var kaizalaConnectorSecret = document.forms["pinsForm"]["kaizalaConnectorSecret"].value;
 
     	var vars = [kaizalaConnectorId, kaizalaConnectorSecret];
+		console.log(kaizalaConnectorId);
 
-      createObject(getAccessToken, methods[0], rootUrl[1]+'/v1/accessToken', null, refreshToken.refreshToken, vars, null);
+      createObject(getAccessToken, methods[0], null, endpointUrl+"v1/accessToken", null,  refreshToken,   null, vars);
 		
 	}
 
 	function getAccessToken(jsonResponse)
 	 {
-   		 var accessToken = JSON.parse(jsonResponse);
+   		var responseObj = JSON.parse(jsonResponse);
+		var  accessToken  = responseObj.accessToken ;
 
     	console.log(accessToken);
 
     
-		createObjectt(fetchGroups, methods[0], rootUrl[1] + '/v1/groups?fetchAllGroups=true&showDetails=true', null, null, null, accessToken.accessToken);
+		createObject(fetchGroups, methods[0], null, rootUrl[1] + 'v1/groups?fetchAllGroups=true&showDetails=true', null, null, accessToken);
 	}
 
-	function getUser(jsonResponse, accessToken) 
-	{
-    	const user = JSON.parse(jsonResponse);
+	// function getUser(jsonResponse, accessToken) 
+	// {
+    // 	const user = JSON.parse(jsonResponse);
 
-    	console.log(user);
-    	createObject(fetchGroups, methods[0], rootUrl[1] + '/v1/groups?fetchAllGroups=true&showDetails=true', null, null, null, accessToken);
-	}
+    // 	console.log(user);
+    // 	createObject(fetchGroups, methods[0], rootUrl[1] + 'v1/groups?fetchAllGroups=true&showDetails=true', null, null, accessToken, vars);
+	// }
 
 
 	function fetchGroups(jsonResponse)
@@ -203,7 +211,7 @@
 		var responseObj = JSON.parse(jsonResponse);
 		var groups = responseObj.groups;
 	  
-		var table = "";
+		var tableData = "";
 		tableData += "<table class='table table-bordered table-striped table-condensed'><tr><th class='text-centre'>Group Name</th><th class='text-centre'>Sub Groups</th>";
 		tableData += "<th class='text-centre'>Group Type</th><th class='text-centre'>Welcome Message</th></tr><tbody id='tbody'></tbody></table>";
 
@@ -215,11 +223,13 @@
 				tbody += '<td>' + responseObj.groups[i].groupType + '</td>';                
 				tbody += '<td>' + responseObj.groups[i].welcomeMessage + '</td></tr>';
 
-				document.getElementById('tbody').innerHTML = tbody;
+				
 
 			
-				document.getElementById("allPatients").innerHTML= tableData;
+				
 			}
+			document.getElementById("allPatients").innerHTML= tableData;
+			document.getElementById('tbody').innerHTML = tbody;
 	}
 	
 
