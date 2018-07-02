@@ -146,7 +146,7 @@
 </div>
 <script type="text/javascript">
 	var methods = ["GET", "POST"];
-	var baseUrl = "http://localhost:8000/";
+	var baseUrl ="{{$baseUrl}}";
 	
 	function createObject(readyStateFunction, requestMethod, requestUrl, sendData=null )
 	{

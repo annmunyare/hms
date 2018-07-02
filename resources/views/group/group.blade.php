@@ -81,6 +81,43 @@
 		</div>
 	</form>
 </div>
+<div id="createGroup" >
+	<form action="#" method="POST"  id="saveGroup" name="groupsForm" >
+		@csrf
+
+        <!-- <div class="inputItems">
+			<input class= "form-control" type="hidden" name="kaizalaMobileNo"  value ={{$mobileNumber}} required  >
+		</div> -->
+
+		<div class="inputItems">
+			<label> Name of Group</label>
+			<input class= "form-control" type="text" name="GroupName" required>
+		</div>
+
+		<div class="inputItems">
+			<label> Welcome Message</label>
+			<input class= "form-control" type="text" name="welcomeMessage" required>
+		</div>
+
+		<div class="inputItems">
+			<label> New Member's Number</label>
+			<input class= "form-control" type="number" name="membersNumber" required>
+		</div>
+
+		<div class="inputItems">
+			<input class= "form-control" type="hidden" name="kaizalaConnectorId"   value ={{$applicationId}} required>
+		</div>
+
+		<div class="inputItems">
+			<label> Group Type</label>
+			<input class= "form-control" type="text" name="groupType" required>
+		</div>
+
+		<div  class="inputButton">
+			<button   class="btn btn-primary "type="submit">Submit</button>
+		</div>
+	</form>
+</div>
 
 
 <div id ="allPatients"></div>
@@ -144,6 +181,7 @@
     }
 
 	document.getElementById("savePin").addEventListener("submit", submitPin);
+	document.getElementById("saveGroup").addEventListener("submit", submitGroup);
 
 	function submitPin(e)
 	{    
@@ -196,14 +234,6 @@
 		createObject(fetchGroups, methods[0], null, rootUrl[1] + 'v1/groups?fetchAllGroups=true&showDetails=true', null, null, accessToken);
 	}
 
-	// function getUser(jsonResponse, accessToken) 
-	// {
-    // 	const user = JSON.parse(jsonResponse);
-
-    // 	console.log(user);
-    // 	createObject(fetchGroups, methods[0], rootUrl[1] + 'v1/groups?fetchAllGroups=true&showDetails=true', null, null, accessToken, vars);
-	// }
-
 
 	function fetchGroups(jsonResponse)
 	{
@@ -230,6 +260,33 @@
 			}
 			document.getElementById("allPatients").innerHTML= tableData;
 			document.getElementById('tbody').innerHTML = tbody;
+	}
+
+	function submitGroup(e)
+	{    
+		e.preventDefault();
+
+		var GroupName = document.forms["groupsForm"]["GroupName"].value;
+		var welcomeMessage = document.forms["groupsForm"]["welcomeMessage"].value;
+		var membersNumber = document.forms["groupsForm"]["membersNumber"].value;
+        var kaizalaConnectorId = document.forms["groupsForm"]["kaizalaConnectorId"].value;
+		var groupType = document.forms["groupsForm"]["groupType"].value;
+
+
+
+
+	    if((GroupName != "") && (welcomeMessage != "") && (membersNumber != "")  && (kaizalaConnectorId != "")  && (groupType != "") )
+	    {
+			var sendData = '{name: "'+GroupName+'", welcomeMessage: "'+welcomeMessage+'", members: ["'+membersNumber+'"],  memberUserIds:["'+kaizalaConnectorId+'"], groupType: "'+groupType+'"}';
+
+			// console.log(sendData);
+	        createObject(getChats, methods[1],  contentType[1], rootUrl[1]+"v1/groups", sendData);
+	    }
+	}
+
+	function getChats()
+	{
+
 	}
 	
 
