@@ -4,7 +4,7 @@
 	<head>
 		<!-- Required meta tags -->
 		<!-- <meta charset="utf-8"> -->
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name = "csrf-token" content="{{csrf_token()}}">
         <!-- Latest compiled and minified CSS -->
