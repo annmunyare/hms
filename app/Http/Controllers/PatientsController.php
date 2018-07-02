@@ -14,7 +14,7 @@ class PatientsController extends Controller
             
          );
 
-        return view('patients.patients');
+        return view('patients.patients', $config);
     }
 
     public function save(Request $request){
