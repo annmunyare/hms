@@ -9,12 +9,9 @@ use App\Visit;
 class PatientsController extends Controller
 {
     public function index(){
-        $config = array(
-            'baseUrl' =>env("LOCAL_HOST"),
-            
-         );
+    
 
-        return view('patients.patients', $config);
+        return view('patients.patients');
     }
 
     public function save(Request $request){
