@@ -4,7 +4,7 @@
 	<head>
 		<!-- Required meta tags -->
 		<!-- <meta charset="utf-8"> -->
-		<meta charset="utf-8"/>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name = "csrf-token" content="{{csrf_token()}}">
         <!-- Latest compiled and minified CSS -->
@@ -85,9 +85,9 @@
 	<form action="#" method="POST"  id="saveGroup" name="groupsForm" >
 		@csrf
 
-        <!-- <div class="inputItems">
-			<input class= "form-control" type="hidden" name="kaizalaMobileNo"  value ={{$mobileNumber}} required  >
-		</div> -->
+        <div class="inputItems">
+			<input class= "form-control" type="hidden" name="accesToken" id ="accessToken"  >
+		</div>
 
 		<div class="inputItems">
 			<label> Name of Group</label>
@@ -101,11 +101,11 @@
 
 		<div class="inputItems">
 			<label> New Member's Number</label>
-			<input class= "form-control" type="number" name="membersNumber" required>
+			<input class= "form-control" type="text" name="membersNumber" required>
 		</div>
 
 		<div class="inputItems">
-			<input class= "form-control" type="hidden" name="kaizalaConnectorId"   value ={{$applicationId}} required>
+			<input class= "form-control" type="hidden" name="kaizalaConnectorId"   value ={{$applicationId}} >
 		</div>
 
 		<div class="inputItems">
@@ -227,6 +227,7 @@
 	 {
    		var responseObj = JSON.parse(jsonResponse);
 		var  accessToken  = responseObj.accessToken ;
+		document.getElementById("accessToken").value= accessToken;
 
     	console.log(accessToken);
 
@@ -271,6 +272,7 @@
 		var membersNumber = document.forms["groupsForm"]["membersNumber"].value;
         var kaizalaConnectorId = document.forms["groupsForm"]["kaizalaConnectorId"].value;
 		var groupType = document.forms["groupsForm"]["groupType"].value;
+		var accesToken = document.forms["groupsForm"]["accesToken"].value;
 
 
 
@@ -280,7 +282,7 @@
 			var sendData = '{name: "'+GroupName+'", welcomeMessage: "'+welcomeMessage+'", members: ["'+membersNumber+'"],  memberUserIds:["'+kaizalaConnectorId+'"], groupType: "'+groupType+'"}';
 
 			// console.log(sendData);
-	        createObject(getChats, methods[1],  contentType[1], rootUrl[1]+"v1/groups", sendData);
+	        createObject(getChats, methods[1],  contentType[1], rootUrl[1]+"v1/groups", sendData, null, accesToken);
 	    }
 	}
 
