@@ -265,6 +265,7 @@
 	    document.getElementById("allPatients").style.display="none";
 	}
 	
+
 	function hideInputForm()
 	{
 	    document.getElementById("inputForm").style.display="none";

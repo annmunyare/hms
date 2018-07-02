@@ -8,21 +8,20 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta name = "csrf-token" content="{{csrf_token()}}">
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      
 
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
+		<!-- jQuery library -->
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-		
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>		
         <title>Kaizala</title>
 
 	</head>
 
-	<body>  
+	<body onload="hideForm()">  
 
-	<nav class="navbar navbar-inverse">
+	<nav class="navbar  navbar-light bg-blue">
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
     <div class="container-fluid">
         <ul class="nav nav-pills">  
@@ -54,7 +53,7 @@
     </div>
 </nav>
 <div class = "container">
-<button  class="btn btn-primary " onclick="authenticate('{{$applicationId}}', '{{$mobileNumber}}')" > Authenticate </button>
+<button  class="btn btn-info " onclick="authenticate('{{$applicationId}}', '{{$mobileNumber}}')" > Authenticate </button> <button  class="btn btn-success " onclick="showGroupsForm()" > Create a Group </button> <button  class="btn btn-warning " onclick="getChats()" > Fetch Chats </button>
 <div id="inputForm" >
 	<form action="#" method="POST"  id="savePin" name="pinsForm" >
 		@csrf
@@ -119,7 +118,6 @@
 	</form>
 </div>
 
-
 <div id ="allPatients"></div>
 
 
@@ -178,10 +176,24 @@
     function showPinForm()
     {
         document.getElementById("inputForm").style.display="block";
+		
+		
     }
+
+	function hideForm()
+	{
+		document.getElementById("createGroup").style.display="none";
+	}
 
 	document.getElementById("savePin").addEventListener("submit", submitPin);
 	document.getElementById("saveGroup").addEventListener("submit", submitGroup);
+	
+	function showGroupsForm()
+	{
+	    document.getElementById("createGroup").style.display="block";
+	    document.getElementById("allPatients").style.display="none";
+		document.getElementById("inputForm").style.display="none";
+	}
 
 	function submitPin(e)
 	{    
@@ -284,12 +296,15 @@
 			// console.log(sendData);
 	        createObject(getChats, methods[1],  contentType[1], rootUrl[1]+"v1/groups", sendData, null, accesToken);
 	    }
-	}
-
-	function getChats()
-	{
 
 	}
+
+
+ function getChats()
+{
+
+}
+
 	
 
 </script>
