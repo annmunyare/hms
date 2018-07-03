@@ -53,7 +53,7 @@
     </div>
 </nav>
 <div class = "container">
-<button  class="btn btn-info " onclick="authenticate('{{$applicationId}}', '{{$mobileNumber}}')" > Authenticate </button> <button  class="btn btn-success " onclick="showGroupsForm()" > Create a Group </button> <button  class="btn btn-warning " onclick="getChats()" > Fetch Chats </button>
+<button  class="btn btn-info " onclick="authenticate('{{$applicationId}}', '{{$mobileNumber}}')" > Authenticate </button> <button  class="btn btn-success " onclick="showGroupsForm()" > Create a Group </button> 
 <div id="inputForm" >
 	<form action="#" method="POST"  id="savePin" name="pinsForm" >
 		@csrf
@@ -86,6 +86,14 @@
 
         <div class="inputItems">
 			<input class= "form-control" type="hidden" name="accesToken" id ="accessToken"  >
+		</div>
+
+        <div class="inputItems">
+			<input class= "form-control" type="hidden" name="groupId" id ="groupId"  >
+		</div>
+
+		<div class="inputItems">
+			<input class= "form-control" type="hidden" name="groupType" id ="groupType"  >
 		</div>
 
 		<div class="inputItems">
@@ -125,7 +133,7 @@
 
 <script type="text/javascript">
 	var methods = ["GET", "POST"];
-	var rootUrl =['https://api.kaiza.la/', 'https://kms.kaiza.la//'];
+	var rootUrl =['https://api.kaiza.la/', 'https://kms.kaiza.la//', 'https://putsreq.com/dty3onca9Rnc5uYdabNy'];
 	var contentType = ["application/x-www-form-urlencoded", "application/json"];
 	// var vars = ["fa7dbf9e-108a-4ed0-9b76-3c4589754464", "EYYD8UWB92"];
 
@@ -250,29 +258,32 @@
 
 	function fetchGroups(jsonResponse)
 	{
-	
+		var tData;
 		var responseObj = JSON.parse(jsonResponse);
+		
+		console.log(responseObj);
 		var groups = responseObj.groups;
+		var groupId = responseObj.groups.groupId;
+		var groupType = responseObj.groups.groupType;
+
+		document.getElementById("groupId").value= groupId;
+		document.getElementById("groupType").value= groupType;
 	  
-		var tableData = "";
-		tableData += "<table class='table table-bordered table-striped table-condensed'><tr><th class='text-centre'>Group Name</th><th class='text-centre'>Sub Groups</th>";
-		tableData += "<th class='text-centre'>Group Type</th><th class='text-centre'>Welcome Message</th></tr><tbody id='tbody'></tbody></table>";
+		var count=0; 
+	    var tableData ="<table class ='table table-bordered table-striped table-condensed'><tr> <th>#</th><th>Group Name</th> <th>Group Type</th><th  colspan ='4'>Action</th></tr>";
+	    for(i = 0; i < groups.length; i++)
+	    {
+	    	 count++;
+	        tableData+= "<tr><td>" + count +"</td>";
+	        tableData+= "<td>" +  responseObj.groups[i].groupName +"</td>";
+	      	tableData+= "<td>" +  responseObj.groups[i].groupType  +"</td>";
+			  console.log(responseObj.groups);
+		tableData+= "<td> <a href = '#' class= 'btn btn-info btn-sm' onclick ='getChats(\""+responseObj.groups[i].groupId+"\", \""+responseObj.groups[i].groupType+"\", \""+responseObj.groups[i].groupId+"\")'> Get Chats</a></td>";
 
-		var tbody = '';
-			for (let i = 0; i < groups.length; i++)
-			{
-				tbody += '<tr><td>' + responseObj.groups[i].groupName + '</td>';
-				tbody += '<td>' + responseObj.groups[i].hasSubGroups + '</td>';
-				tbody += '<td>' + responseObj.groups[i].groupType + '</td>';                
-				tbody += '<td>' + responseObj.groups[i].welcomeMessage + '</td></tr>';
-
-				
-
-			
-				
-			}
-			document.getElementById("allPatients").innerHTML= tableData;
-			document.getElementById('tbody').innerHTML = tbody;
+	       
+	    }
+	    tableData+="</table>";
+	    document.getElementById("allPatients").innerHTML= tableData;
 	}
 
 	function submitGroup(e)
@@ -300,12 +311,25 @@
 	}
 
 
- function getChats()
+ function getChats(groupId)
 {
-
-}
-
 	
+	var accesToken = document.forms["groupsForm"]["accesToken"].value;
+	var groupId = document.forms["groupsForm"]["groupId"].value;
+	var groupType = document.forms["groupsForm"]["groupType"].value;
+	var TextMessageCreated = TextMessageCreated;
+
+	var sendData = '{"objectId": '+groupId+', "objectType": "'+groupType+'", "eventTypes": ["'+TextMessageCreated+'"],  "callBackUrl": "'+ rootUrl[2] +'"}';
+
+
+	createObject(responseText, methods[1],  contentType[1], rootUrl[1]+"v1/webhook", sendData, null, accesToken);
+	   
+}
+function responseText(jsonResponse)
+{
+	var responseObj = JSON.parse(jsonResponse);
+	console.log(responseObj);
+}
 
 </script>
 </body>
