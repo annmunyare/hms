@@ -37,7 +37,7 @@ class GroupController extends Controller
             //curl function
 
             
-        $data = array("message"=>"responseMessage");                                                               
+        $data = array("message"=>$responseMessage);                                                               
         $data_string = json_encode($data);                                                                                   
                                                                                                                             
         $ch = curl_init($url);                                                                      
