@@ -15,6 +15,7 @@
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>		
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Kaizala</title>
 
 	</head>
@@ -53,7 +54,9 @@
     </div>
 </nav>
 <div class = "container">
-<button  class="btn btn-info " onclick="authenticate('{{$applicationId}}', '{{$mobileNumber}}')" > Authenticate </button> <button  class="btn btn-success " onclick="showGroupsForm()" > Create a Group </button> 
+<button  class="btn btn-info " onclick="authenticate('{{$applicationId}}', '{{$mobileNumber}}')" > <i class="material-icons">vpn_key</i>
+ Authenticate </button> <button  class="btn btn-success " onclick="showGroupsForm()" ><i class="material-icons">group_add</i>
+ Create a Group </button> 
 <div id="inputForm" >
 	<form action="#" method="POST"  id="savePin" name="pinsForm" >
 		@csrf
@@ -74,9 +77,9 @@
 			<label> Authenticate Pin:</label>
 			<input class= "form-control" type="number" name="authpin" required>
 		</div>
-
+		<br> 
 		<div  class="inputButton">
-			<button   class="btn btn-primary "type="submit">Submit</button>
+			<button   class="btn btn-primary "type="submit">Submit</button> <br> 
 		</div>
 	</form>
 </div>
@@ -123,6 +126,19 @@
 		<div  class="inputButton">
 			<button   class="btn btn-primary "type="submit">Submit</button>
 		</div>
+	</form>
+</div>
+
+<div id="textMessage" >
+	<form action="#" method="POST"  id="textMessage" name="textMessage" >
+		@csrf
+
+		<div class="inputItems">
+		
+			<input class= "form-control" type="hidden" name="TextMessageCreated" value = "TextMessageCreated">
+		</div>
+
+
 	</form>
 </div>
 
@@ -278,7 +294,7 @@
 	        tableData+= "<td>" +  responseObj.groups[i].groupName +"</td>";
 	      	tableData+= "<td>" +  responseObj.groups[i].groupType  +"</td>";
 			  console.log(responseObj.groups);
-		tableData+= "<td> <a href = '#' class= 'btn btn-info btn-sm' onclick ='getChats(\""+responseObj.groups[i].groupId+"\", \""+responseObj.groups[i].groupType+"\", \""+responseObj.groups[i].groupId+"\")'> Get Chats</a></td>";
+		tableData+= "<td> <a href = '#' class= 'btn btn-info btn-sm' onclick ='getChats(\""+responseObj.groups[i].groupId+"\", \""+responseObj.groups[i].groupType+"\")'>   <i class='material-icons'>message</i>Get Chats</a></td>";
 
 	       
 	    }
@@ -311,24 +327,35 @@
 	}
 
 
- function getChats(groupId)
-{
+//  function getChats(groupId, groupType)
+// {
 	
-	var accesToken = document.forms["groupsForm"]["accesToken"].value;
-	var groupId = document.forms["groupsForm"]["groupId"].value;
-	var groupType = document.forms["groupsForm"]["groupType"].value;
-	var TextMessageCreated = TextMessageCreated;
+// 	var accesToken = document.forms["groupsForm"]["accesToken"].value;
+// 	// var TextMessageCreated = document.forms["textMessage"]["TextMessageCreate"].value;
 
-	var sendData = '{"objectId": '+groupId+', "objectType": "'+groupType+'", "eventTypes": ["'+TextMessageCreated+'"],  "callBackUrl": "'+ rootUrl[2] +'"}';
+// 	var sendData = '{"objectId": '+groupId+', "objectType": "'+groupType+'", "eventTypes": ["'+TextMessageCreated+'"],  "callBackUrl": "'+ rootUrl[2] +'"}';
 
 
-	createObject(responseText, methods[1],  contentType[1], rootUrl[1]+"v1/webhook", sendData, null, accesToken);
+// 	createObject(sendMessage, methods[1],  contentType[1], rootUrl[1]+"v1/webhook", sendData, null, accesToken);
 	   
-}
-function responseText(jsonResponse)
+// }
+
+function showPatient()
+{
+	    createObject(sendMessage, methods[0], rootUrl[1]+"getChats/"); 
+}	   
+
+
+function sendMessage (jsonResponse)
 {
 	var responseObj = JSON.parse(jsonResponse);
+		
 	console.log(responseObj);
+	// chck the word bomb
+
+	var accesToken = document.forms["groupsForm"]["accesToken"].value;
+	createObject(responseText, methods[1],  contentType[1], rootUrl[1]+"v1/groups/+'groupId'+/messages", sendData, null, accesToken);
+	   
 }
 
 </script>

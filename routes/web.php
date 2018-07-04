@@ -21,6 +21,7 @@
 // Route::resource('services', 'ServicesController');
 
 Route::get('/', 'PatientsController@index');
+Route::get('/patients', 'PatientsController@index');
 Route::post('/savePatient','PatientsController@save');
 Route::post('/updatePatient', 'PatientsController@update');
 Route::post('/bookVisit', 'PatientsController@book');
@@ -43,6 +44,7 @@ Route::get('/deleteVisit/{visitId}', 'VisitsController@delete');
 Route::get('/getSingleVisit/{visitId}', 'VisitsController@getSingle');
 
 Route::get('/groups', 'GroupController@index');
+Route::get('/getChats', 'GroupController@filter');
 
 
 
