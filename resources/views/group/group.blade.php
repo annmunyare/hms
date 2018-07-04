@@ -340,10 +340,10 @@
 	   
 // }
 
-function showPatient()
-{
-	    createObject(sendMessage, methods[0], rootUrl[1]+"getChats/"); 
-}	   
+// function showPatient()
+// {
+// 	    createObject(sendMessage, methods[0], rootUrl[1]+"getChats/"); 
+// }	   
 
 
 function sendMessage (jsonResponse)

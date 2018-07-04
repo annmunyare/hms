@@ -44,7 +44,7 @@ Route::get('/deleteVisit/{visitId}', 'VisitsController@delete');
 Route::get('/getSingleVisit/{visitId}', 'VisitsController@getSingle');
 
 Route::get('/groups', 'GroupController@index');
-Route::get('/getChats', 'GroupController@filter');
+Route::post('/getChats', 'GroupController@filter');
 
 
 
