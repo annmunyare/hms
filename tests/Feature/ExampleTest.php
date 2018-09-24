@@ -1,11 +1,12 @@
 <?php
 
-namespace Tests\Feature;
+// namespace Tests\Feature;
+namespace Tests;
+// use Tests\TestCase;
+// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\BrowserKitTesting\TestCase as BaseTestCase;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-class ExampleTest extends TestCase
+class ExampleTest extends  BaseTestCase
 {
     /**
      * A basic test example.

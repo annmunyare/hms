@@ -144,6 +144,7 @@
 	</form>
 </div>
 </div>
+
 <script type="text/javascript">
 	var methods = ["GET", "POST"];
 	var baseUrl = "http://127.0.0.1:8000/";
